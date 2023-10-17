@@ -1,36 +1,51 @@
 package com.example.bank.controller
 
-import com.example.bank.model.Client
-import com.example.bank.repository.ClientRepository
+import com.example.bank.dto.ClientRequest
+import com.example.bank.dto.ClientResponse
+import com.example.bank.dto.SuccessResponse
+import com.example.bank.entity.Client
+import com.example.bank.service.ClientService
 import org.springframework.web.bind.annotation.*
-import org.springframework.http.ResponseEntity
-import org.springframework.http.HttpStatus
 import java.util.*
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity
+import kotlin.collections.List
 
 
 @RestController
 @RequestMapping("/api/user")
-class ClientController(private val clientRepository: ClientRepository) {
+class ClientController(val clientService: ClientService) {
 
     @GetMapping("/list")
-    fun list() = clientRepository.findAll()
+    fun list(): SuccessResponse<List<ClientResponse>> {
+        val clientList: List<ClientResponse> = clientService.getAll()
+        return SuccessResponse(
+            status = "SUCCESS",
+            data = clientList
+        )
+    }
 
     @GetMapping("/{id}")
-    fun getUser(@PathVariable id: Long): ResponseEntity<Client> {
-        return clientRepository.findById(id).map { client ->
-            ResponseEntity.ok(client)
-        }.orElse(ResponseEntity.notFound().build())
+    fun getUser(@PathVariable id: Long) : SuccessResponse<ClientResponse> {
+        val client: ClientResponse = clientService.getId(id)
+        return SuccessResponse(
+            status = "SUCCESS",
+            data = client
+        )
     }
 
     @PostMapping
-    fun create(@Valid @RequestBody client : Client) = clientRepository.save(client)
+    fun create(@Valid @RequestBody client : ClientRequest): SuccessResponse<ClientResponse> {
+        val newClient = clientService.add(client)
+        return SuccessResponse(
+            status = "SUCCESS",
+            data = newClient
+        )
+    }
+
+//    @PutMapping("/{id}")
+//    fun update(@PathVariable id: Long) = clientService.update(id)
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) : ResponseEntity<Void> {
-        return clientRepository.findById(id).map {
-            clientRepository.deleteById(id)
-            ResponseEntity<Void>(HttpStatus.OK)
-        }.orElse(ResponseEntity.notFound().build())
-    }
+    fun delete(@PathVariable id: Long) = clientService.remove(id)
 }
