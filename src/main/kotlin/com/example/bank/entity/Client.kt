@@ -8,6 +8,10 @@ import java.util.UUID
 @Entity
 @Table(name = "client")
 data class Client(
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    var id: UUID = UUID.randomUUID(),
+
     @NotBlank
     @Column(name = "firstName")
     var firstName: String,
@@ -23,16 +27,9 @@ data class Client(
     @Column(name = "phone")
     var phone: String,
 
-    @Column(name = "uid")
-    var uid: UUID = UUID.randomUUID(),
-
     @Column(name = "created_at")
     var createdAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime = LocalDateTime.now(),
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Long = 0,
 )

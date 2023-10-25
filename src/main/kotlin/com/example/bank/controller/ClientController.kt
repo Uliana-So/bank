@@ -1,20 +1,19 @@
 package com.example.bank.controller
 
+import com.example.bank.dto.AccountResponse
 import com.example.bank.dto.ClientRequest
 import com.example.bank.dto.ClientResponse
 import com.example.bank.dto.SuccessResponse
-import com.example.bank.entity.Client
+import com.example.bank.service.AccountService
 import com.example.bank.service.ClientService
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity
 import kotlin.collections.List
-
 
 @RestController
 @RequestMapping("/api/user")
-class ClientController(val clientService: ClientService) {
+class ClientController(val clientService: ClientService, val accountService: AccountService) {
 
     @GetMapping("/list")
     fun list(): SuccessResponse<List<ClientResponse>> {
@@ -26,7 +25,7 @@ class ClientController(val clientService: ClientService) {
     }
 
     @GetMapping("/{id}")
-    fun getUser(@PathVariable id: Long) : SuccessResponse<ClientResponse> {
+    fun getUser(@PathVariable id: UUID) : SuccessResponse<ClientResponse> {
         val client: ClientResponse = clientService.getId(id)
         return SuccessResponse(
             status = "SUCCESS",
@@ -43,9 +42,39 @@ class ClientController(val clientService: ClientService) {
         )
     }
 
-//    @PutMapping("/{id}")
-//    fun update(@PathVariable id: Long) = clientService.update(id)
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: UUID, @Valid @RequestBody client : ClientRequest):SuccessResponse<ClientResponse>{
+        val updateClient = clientService.update(id, client)
+        return SuccessResponse(
+            status = "SUCCESS",
+            data = updateClient
+        )
+    }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) = clientService.remove(id)
+    fun delete(@PathVariable id: UUID): SuccessResponse<UUID> {
+        clientService.remove(id)
+        return SuccessResponse(
+            status = "SUCCESS",
+            data = id
+        )
+    }
+
+    @GetMapping("/{id}/account/list")
+    fun getAccountList(@PathVariable id: UUID) : SuccessResponse<List<UUID>> {
+        val accounts: List<UUID> = accountService.getListByClient(id)
+        return SuccessResponse(
+            status = "SUCCESS",
+            data = accounts
+        )
+    }
+
+    @PostMapping("/{id}/account/open")
+    fun openAccount(@PathVariable id: UUID) : SuccessResponse<AccountResponse> {
+        val account: AccountResponse = accountService.addByClient(id)
+        return SuccessResponse(
+            status = "SUCCESS",
+            data = account
+        )
+    }
 }
