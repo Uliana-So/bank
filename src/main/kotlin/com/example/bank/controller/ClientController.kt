@@ -1,9 +1,6 @@
 package com.example.bank.controller
 
-import com.example.bank.dto.AccountResponse
-import com.example.bank.dto.ClientRequest
-import com.example.bank.dto.ClientResponse
-import com.example.bank.dto.SuccessResponse
+import com.example.bank.dto.*
 import com.example.bank.service.AccountService
 import com.example.bank.service.ClientService
 import org.springframework.web.bind.annotation.*
@@ -78,8 +75,14 @@ class ClientController(
     }
 
     @PostMapping("/{id}/account/open")
-    fun openAccount(@PathVariable id: UUID) : SuccessResponse<AccountResponse> {
-        val account: AccountResponse = accountService.addByClient(id)
+    fun openAccount(
+        @PathVariable id: UUID,
+        @Valid @RequestBody typeRequest : AccountRequest
+    ) : SuccessResponse<AccountResponse> {
+        val account: AccountResponse = accountService.addByClient(
+            id = id,
+            type = typeRequest.type
+        )
         return SuccessResponse(
             status = "SUCCESS",
             data = account
