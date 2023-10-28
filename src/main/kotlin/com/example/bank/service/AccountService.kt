@@ -13,7 +13,10 @@ import java.util.*
 import kotlin.collections.List
 
 @Service
-class AccountService(val clientRepository: ClientRepository, val accountRepository: AccountRepository) {
+class AccountService(
+    val clientRepository: ClientRepository,
+    val accountRepository: AccountRepository
+) {
     fun getListByClient(id: UUID): List<UUID> {
         val client: Client = clientRepository.findByIdOrNull(id) ?: throw ChangeSetPersister.NotFoundException()
         val accounts: List<Account> = accountRepository.findByClient(client)

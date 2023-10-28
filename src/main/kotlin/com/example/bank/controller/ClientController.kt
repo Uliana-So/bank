@@ -13,8 +13,10 @@ import kotlin.collections.List
 
 @RestController
 @RequestMapping("/api/user")
-class ClientController(val clientService: ClientService, val accountService: AccountService) {
-
+class ClientController(
+    val clientService: ClientService,
+    val accountService: AccountService
+) {
     @GetMapping("/list")
     fun list(): SuccessResponse<List<ClientResponse>> {
         val clientList: List<ClientResponse> = clientService.getAll()
@@ -43,8 +45,14 @@ class ClientController(val clientService: ClientService, val accountService: Acc
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: UUID, @Valid @RequestBody client : ClientRequest):SuccessResponse<ClientResponse>{
-        val updateClient = clientService.update(id, client)
+    fun update(
+        @PathVariable id: UUID,
+        @Valid @RequestBody client : ClientRequest
+    ):SuccessResponse<ClientResponse>{
+        val updateClient = clientService.update(
+            id = id,
+            client = client
+        )
         return SuccessResponse(
             status = "SUCCESS",
             data = updateClient

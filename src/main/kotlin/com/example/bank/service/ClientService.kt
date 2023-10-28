@@ -28,7 +28,10 @@ class ClientService(val clientRepository: ClientRepository) {
         return toResponseDTO(newClient)
     }
 
-    fun update(id: UUID, client: ClientRequest): ClientResponse {
+    fun update(
+        id: UUID,
+        client: ClientRequest
+    ): ClientResponse {
         val updateClient: Client = clientRepository.findByIdOrNull(id) ?: throw ChangeSetPersister.NotFoundException()
         updateClient.apply {
             firstName = client.firstName
