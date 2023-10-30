@@ -3,8 +3,9 @@ package com.example.bank.service
 import com.example.bank.dto.ClientRequest
 import com.example.bank.dto.ClientResponse
 import com.example.bank.entity.Client
+import com.example.bank.exception.BankException
+import com.example.bank.exception.ErrorCode
 import com.example.bank.repository.ClientRepository
-import org.springframework.data.crossstore.ChangeSetPersister
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -19,7 +20,8 @@ class ClientService(val clientRepository: ClientRepository) {
     }
 
     fun getId(id: UUID): ClientResponse {
-        val clientResponse: Client = clientRepository.findByIdOrNull(id) ?: throw ChangeSetPersister.NotFoundException()
+        val clientResponse: Client =
+            clientRepository.findByIdOrNull(id) ?: throw BankException(ErrorCode.CLIENT_NOT_FOUND)
         return toResponseDTO(clientResponse)
     }
 
@@ -32,7 +34,8 @@ class ClientService(val clientRepository: ClientRepository) {
         id: UUID,
         client: ClientRequest
     ): ClientResponse {
-        val updateClient: Client = clientRepository.findByIdOrNull(id) ?: throw ChangeSetPersister.NotFoundException()
+        val updateClient: Client =
+            clientRepository.findByIdOrNull(id) ?: throw BankException(ErrorCode.CLIENT_NOT_FOUND)
         updateClient.apply {
             firstName = client.firstName
             lastName = client.lastName
@@ -45,7 +48,7 @@ class ClientService(val clientRepository: ClientRepository) {
     }
 
     fun remove(id: UUID) {
-        val client: Client = clientRepository.findByIdOrNull(id) ?: throw ChangeSetPersister.NotFoundException()
+        val client: Client = clientRepository.findByIdOrNull(id) ?: throw BankException(ErrorCode.CLIENT_NOT_FOUND)
         clientRepository.delete(client)
     }
 

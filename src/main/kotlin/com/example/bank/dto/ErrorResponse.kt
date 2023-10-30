@@ -1,7 +1,7 @@
 package com.example.bank.dto
 
-data class ErrorResponse<T>(
-    val code: Int,
+data class ErrorResponse(
     val status: String,
-    val error: T
+    val error: String,
+    val details: Any? = null
 )
