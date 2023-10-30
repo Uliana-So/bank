@@ -13,14 +13,14 @@ data class Client(
     var id: UUID = UUID.randomUUID(),
 
     @NotBlank
-    @Column(name = "firstName")
+    @Column(name = "first_name")
     var firstName: String,
 
     @NotBlank
-    @Column(name = "lastName")
+    @Column(name = "last_name")
     var lastName: String,
 
-    @Column(name = "middleName")
+    @Column(name = "middle_name")
     var middleName: String = "",
 
     @NotBlank
